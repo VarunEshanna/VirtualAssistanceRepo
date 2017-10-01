@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Speech to text converter in JS</title>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<style type="text/css">
+			body{
+				font-family: verdana;
+			}
+			#result{
+				height: 200px;
+				border: 1px solid #ccc;
+				padding: 10px;
+				box-shadow: 0 0 10px 0 #bbb;
+				margin-bottom: 30px;
+				font-size: 14px;
+				line-height: 25px;
+			}
+			button{
+				font-size: 20px;
+				position: absolute;
+				top: 240px;
+				left: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<h4 align="center">Speech to text converter in JS</h4>
+		<div ng-app="Integration" ng-controller='drawLine' id="result">
+			<button ng-click="startConverting();"><i class="fa fa-microphone"></i></button>
+		</div>
+		<script type="text/javascript">
+			var app = angular.module('Integration',[]);
+			app.controller('drawLine',function($scope,$http) {
+				var myVar = $http
+
+				var r = document.getElementById('result');
+
+			$scope.startConverting = function () {
+				if('webkitSpeechRecognition' in window){
+					var speechRecognizer = new webkitSpeechRecognition();
+					speechRecognizer.continuous = false;
+					speechRecognizer.interimResults = true;
+					speechRecognizer.lang = 'en-IN';
+					speechRecognizer.start();
+
+					var finalTranscripts = '';
+
+					speechRecognizer.onresult = function(event){
+						var interimTranscripts = '';
+						for(var i = event.resultIndex; i < event.results.length; i++){
+							var transcript = event.results[i][0].transcript;
+							transcript.replace("\n", "<br>");
+							if(event.results[i].isFinal){
+								finalTranscripts += transcript;
+							}else{
+								interimTranscripts += transcript;
+							}
+						}
+						r.innerHTML = finalTranscripts + '<span style="color:#999">' + interimTranscripts + '</span>';
+					};
+					
+					speechRecognizer.onerror = function (event) {
+					};
+
+					speechRecognizer.onend = function (event, $scope, $http, finalTranscripts) {
+						console.log('data12: '+ finalTranscripts);
+/*						var data1 = {
+							            userQuery: finalTranscripts,
+							            luisCallRequired: true
+							        }
+						$http({
+							url: 'https://virtualassistance.herokuapp.com/getLuisData',
+							method: 'POST',
+							data: data1
+							}).success(function(response) {
+								console.log('success: ' + response);
+							}).error(function(response) {
+								console.log('error: ' + response);
+						})*/
+						callVA(event, $scope, $http, finalTranscripts);
+					};
+
+				}else{
+					r.innerHTML = 'Your browser is not supported. If google chrome, please upgrade!';
+				}
+			}
+
+
+			function callVA(event, $scope, $http, finalTranscripts){
+					console.log('data123: '+ finalTranscripts);
+						var data1 = {
+							            userQuery: finalTranscripts,
+							            luisCallRequired: true
+							        }
+						$http({
+							url: 'https://virtualassistance.herokuapp.com/getLuisData',
+							method: 'POST',
+							data: data1
+							}).success(function(response) {
+								console.log('success: ' + response);
+							}).error(function(response) {
+								console.log('error: ' + response);
+						})
+			}
+				
+			});
+
+
+			
+
+		</script>
+	</body>
+</html>

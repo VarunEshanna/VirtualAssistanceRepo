@@ -1,0 +1,37 @@
+body {
+   font-size: 12px;
+   line-height: 2;
+   color: white;
+   background-color:#212121;
+}
+
+input[type="radio"]{
+  margin: 0 60px 0 60px;
+}
+
+tr{
+	font-size: 12px;
+}
+
+.heading{
+	background:transparent url('https://sfstage-adobedealreg.cs71.force.com/resource/1487432279000/C2AResources/form_fill_banner.jpg') no-repeat; 
+	background-size: 100% 100%; 
+	height:225px; 
+	color:white;
+	font-weight: bold;
+}
+
+.pagerstyle{
+	color:black;
+	font-weight: bold;
+}
+
+.imgrounded {
+    border-radius: 35px;
+    border-style: hidden;
+    padding : 10px 10px 10px 10px;
+}
+
+#myModal{
+	color: black;
+}

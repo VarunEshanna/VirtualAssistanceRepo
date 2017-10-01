@@ -1,0 +1,396 @@
+<html ng-app="myApp">
+<head>
+	<title>Virtual Assistance</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+</head>
+<body>
+	<div ng-controller="mainCtrl">
+		<div class="text-right heading">
+			Welcome Varun, Logout
+		</div>
+
+		<div class="container">
+		</br>
+			<div class="text-center">
+				<img src="setup_1.jpg" class="imgrounded" width="300" height="300" ng-click="initDisplay('setUp')" ng-show="showSetUp">
+				<img src="configure.jpg" class="imgrounded" width="300" height="300" ng-click="initDisplay('config')" ng-show="showSetUp"> 
+			</div>
+			<div ng-show="initialiseDisplay == 'setUp'">
+			<div class="text-center">
+			<p>
+				<input type="radio" ng-model="radioValue" ng-click="displayContent('mongodb')" value="mongodb" data-toggle="tooltip" title="Mongo DB Configuration"></input>
+				<input type="radio" ng-model="radioValue" ng-click="displayContent('luis')" value="luis" data-toggle="tooltip" title="LUIS Configuration"></input>
+				<input type="radio" ng-model="radioValue" ng-click="displayContent('connectors')" value="connectors" data-toggle="tooltip" title="Connector Details"></input>
+				<input type="radio" ng-model="radioValue" ng-click="displayContent('configuration')" value="configuration" data-toggle="tooltip" title="Intent Details"></input>
+			</p>
+			</div>
+
+			<div ng-show="displayModule == 'mongodb'">
+				<h5 class="text-center">Mongo DB configuration</h5>
+				<div class="row">
+				    <div class="col-sm-8">
+						<form class="form-horizontal">
+						  <div class="form-group">
+						    <label for="username" class="control-label col-sm-2">Username :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="username" ng-model="username">
+							</div>
+						  </div>
+						  <div class="form-group">
+						    <label for="pwd" class="control-label col-sm-2">Password:</label>
+						    <div class="col-sm-10">
+						    	<input type="password" class="form-control input-sm" id="pwd" ng-model="pwd">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="host" class="control-label col-sm-2">Host :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="host" ng-model="host">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="port" class="control-label col-sm-2">Port :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="port" ng-model="port">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="database" class="control-label col-sm-2">Database :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="database" ng-model="database">
+						    </div>
+						  </div>
+						  <div class="text-center">
+							<button class="btn btn-primary" ng-click="validateDbData()">Validate Connection</button>
+							<button class="btn btn-primary" ng-click="saveDbData()">Save Connection</button>
+						  </div>
+						</form>
+				    </div>
+				    <div class="col-sm-4">
+						<button data-toggle="collapse" data-target="#mongodbdetails" class="btn btn-primary">Click me for details</button>
+						<div id="mongodbdetails" class="collapse">
+						Please enter mongo db credentials and save data. This is used to store intent releated information
+						</div>
+
+						<table class="table">
+							<thead>
+								<tr>
+									<td></td>
+									<td></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Status</td>
+									<td>Success</td>
+								</tr>
+							</tbody>
+						</table>
+
+				    </div>
+				</div>
+
+				<ul class="pager">
+				  <li><a href="#" ng-click="displayContent('luis')" class="pagerstyle">Next</a></li>
+				</ul>
+			</div>
+
+			<div  ng-show="displayModule == 'luis'">
+				<h5 class="text-center">LUIS configuration</h5>
+
+				<div class="row">
+				    <div class="col-sm-8">
+						<form class="form-horizontal">
+						  <div class="form-group">
+						    <label for="luisurl" class="control-label col-sm-2">LUIS url :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="luisurl" ng-model="luisurl">
+							</div>
+						  </div>
+						  <div class="text-center">
+							<button class="btn btn-primary">Save URL</button>
+						  </div>
+						</form>
+				    </div>
+				    <div class="col-sm-4">
+						<button data-toggle="collapse" data-target="#luisdetails" class="btn btn-primary">Click me for details</button>
+						<div id="luisdetails" class="collapse">
+						Please enter LUIS URL
+						</div>
+				    </div>
+				</div>
+
+				<ul class="pager">
+				  <li><a href="#" ng-click="displayContent('mongodb')" class="pagerstyle">Previous</a></li>
+				  <li><a href="#" ng-click="displayContent('connectors')" class="pagerstyle">Next</a></li>
+				</ul>
+
+			</div>
+
+			<div ng-show="displayModule == 'connectors'">
+				<h5 class="text-center">Connectors</h5>
+
+				<div class="dropdown">
+				  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Connector
+				  <span class="caret"></span></button>&nbsp;{{seletedConnector}}
+				  <ul class="dropdown-menu">
+				    <li><a href="#" ng-click="showConnectorDetails('SFDC')">SFDC</a></li>
+				    <li><a href="#" ng-click="showConnectorDetails('Oracle')">Oracle</a></li>
+				  </ul>
+				</div>
+				
+				<div class="row" ng-show="seletedConnector == 'SFDC'">
+				    <div class="col-sm-8">
+						<form class="form-horizontal">
+						  <div class="form-group">
+						    <label for="sfdcusername" class="control-label col-sm-2">Username :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="sfdcusername" ng-model="username">
+							</div>
+						  </div>
+						  <div class="form-group">
+						    <label for="sfdcpwd" class="control-label col-sm-2">Password:</label>
+						    <div class="col-sm-10">
+						    	<input type="password" class="form-control input-sm" id="sfdcpwd" ng-model="sfdcpwd">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="sdfcsecuritytoken" class="control-label col-sm-2">Security Token:</label>
+						    <div class="col-sm-10">
+						    	<input type="password" class="form-control input-sm" id="sdfcsecuritytoken" ng-model="sdfcsecuritytoken">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="sfdcclientId" class="control-label col-sm-2">Client Id :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="sfdcclientId" ng-model="sfdcclientId">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="sfdcclientSecret" class="control-label col-sm-2">Client Secret :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="sfdcclientSecret" ng-model="sfdcclientSecret">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="sdfcenvironment" class="control-label col-sm-2">Login Url :</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="sdfcenvironment" ng-model="sdfcenvironment">
+						    </div>
+						  </div>
+						  <div class="text-center">
+							<button class="btn btn-primary">Save Data</button>
+						  </div>
+						</form>
+				    </div>
+				    <div class="col-sm-4">
+						<button data-toggle="collapse" data-target="#connectordetails" class="btn btn-primary">Click me for details</button>
+						<div id="connectordetails" class="collapse">
+						Please enter SDFC connection details
+						</div>
+
+						<table class="table">
+							<thead>
+								<tr>
+									<td></td>
+									<td></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Status</td>
+									<td>Success</td>
+								</tr>
+							</tbody>
+						</table>
+
+				    </div>
+				</div>
+
+				<div class="row" ng-show="seletedConnector == 'Oracle'">
+					Under development!!!
+				</div>
+
+				<ul class="pager">
+				  <li><a href="#" ng-click="displayContent('luis')" class="pagerstyle">Previous</a></li>
+				  <li><a href="#" ng-click="displayContent('configuration')" class="pagerstyle">Next</a></li>
+				</ul>
+			</div>
+
+			<div ng-show="displayModule == 'configuration'">
+				<h5 class="text-center">Select Response types</h5>
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="checkbox">
+					      <label><input type="checkbox" value="">Chat</label>
+					    </div>
+					    <div class="checkbox">
+					      <label><input type="checkbox" value="">Voice</label>
+					    </div>
+					    <div class="text-center">
+							<button class="btn btn-primary">Save Data</button>
+						</div>
+					</div>
+					<div class="col-sm-4">
+					</div>
+				</div>
+				<ul class="pager">
+				  <li><a href="#" ng-click="displayContent('connectors')" class="pagerstyle">Previous</a></li>
+				</ul>
+			</div>
+		</div>
+
+
+		<div ng-show="initialiseDisplay == 'config'">
+
+			<div class="text-center">
+			<p>
+				<input type="radio" ng-model="radioValue" ng-click="displayContent('configureLuis')" value="configureLuis" data-toggle="tooltip" title="Configure LUIS"></input>
+				<input type="radio" ng-model="radioValue" ng-click="displayContent('configureResp')" value="configureResp" data-toggle="tooltip" title="Configure Response"></input>
+			</div>
+			<div ng-show="displayModule == 'configureLuis'">
+				<div class="row" >
+				    <div class="col-sm-8">
+						<form class="form-horizontal">
+						  <div class="form-group">
+						    <label for="intentName" class="control-label col-sm-2">User Intent:</label>
+						    <div class="col-sm-10">
+						    	<input type="text" class="form-control input-sm" id="intentName" ng-model="intentName">
+							</div>
+						  </div>
+						  <div class="form-group">
+						    <label for="userText" class="control-label col-sm-2">User Text:</label>
+						    <div class="col-sm-10">
+						    	<input type="textarea" class="form-control input-sm" id="userText" ng-model="userText">
+						    </div>
+						  </div>
+
+						<div id="userText">{{userText}}</div>
+
+						<input style="display:none;" type="textarea" id="sel" class="form-control input-sm" ng-model="userText"></input>
+						<div class="form-group">
+							
+						    <div ng-repeat="param in myList">
+						    	<div class="row">
+							    	<div class="col-sm-4">
+							    		<input type="text" class="col-sm-8 input-sm" style="color:black">
+							    	</div>
+							    	<div class="col-sm-8">
+							    		<input type="text" class="form-control input-sm" ng-model="entity[param]">
+							    	</div>
+						    	</div>
+							</div>
+						</div> 
+						<div class="text-center">
+							<button class="btn btn-primary" ng-click="addEntity()">Add Entity</button>
+							<button class="btn btn-primary" ng-click="removeEntity()">Remove Entity</button>
+							<button class="btn btn-primary" ng-click="submitData()">Save Data</button>
+						</div>
+
+						</form>
+				    </div>
+				    <div class="col-sm-4">
+						<table class="table">
+							<thead>
+								<tr>
+									<td></td>
+									<td></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Status</td>
+									<td>Success</td>
+								</tr>
+							</tbody>
+						</table>
+
+				    </div>
+				</div>
+				<ul class="pager">
+				  <li><a href="#" ng-click="displayContent('configureResp')" class="pagerstyle">Next</a></li>
+				</ul>
+
+				</div>
+
+
+		
+
+		<div class="row" ng-show="displayModule == 'configureResp'">
+			<table class="table">
+				<thead>
+					<tr>
+						<td><strong>Intent Name</strong></td>
+						<td><strong>Status</strong></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>ECM_USER_ACCESS</td>
+						<td>Response Not Configured</td>
+					</tr>
+					<tr>
+						<td>ECM_DELETE_AGREEMENT</td>
+						<td>Completed</td>
+					</tr>
+				</tbody>
+			</table>
+
+
+
+
+			<!-- Trigger the modal with a button -->
+			<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+			<!-- Modal -->
+			<div id="myModal" class="modal fade" role="dialog">
+			  <div class="modal-dialog">
+
+			    <!-- Modal content-->
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title">Configure Response For Intent </h4>
+			      </div>
+			      <div class="modal-body">
+			        <form>
+				    <div class="form-group">
+				      <select class="form-control" id="sel1" onchange="getval(this);">
+				      	<option value="">Select response option</option>
+				        <option value="Expression">Expression</option>
+				        <option value="SOQL">SOQL Query</option>
+				      </select>
+				  	</div>
+					</form>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+
+			  </div>
+			</div>
+
+
+
+
+
+
+
+
+
+			<ul class="pager">
+			  <li><a href="#" ng-click="displayContent('configureLuis')" class="pagerstyle">Prevois</a></li>
+			</ul>
+		</div>
+
+
+		</div>
+	</div>
+</body>
+</html>

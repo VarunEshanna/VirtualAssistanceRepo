@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+    <head>
+        <link rel="stylesheet" href="/a.css">
+    </head>
+        <h1>VIRTUAL ASSISTANCE</h1>
+        <h2>ENTER THE DETAILS</h2>
+        <script type="text/javascript" src="/a.js"></script>  
+    <body>
+        <form>
+        <ul class="form-style-1" id="list">
+            <li><label>INTENT <span class="required">*</span></label><input type="text" name="intent1" class="field-divided" placeholder="Intent" />&nbsp;<input type="text" name="intent2" class="field-divided" placeholder="Intent User Message" /></li>
+            <li id="entity" ><label>ENTITIES <span class="required">*</span></label><input type="text" name="entity1" class="field-divided" placeholder="Entity" />&nbsp;<input type="text" name="entity2" class="field-divided" placeholder="Entity User Message" />
+				<img src="/plus.jpg" onclick=addAnother() />
+				<img src="/minus.jpg" onclick=remove() />
+			</li>
+            <li><label>RESPONSE <span class="required">*</span></label><input type="text" name="response1" class="field-divided" placeholder="Response" />&nbsp;<input type="text" name="response2" class="field-divided" placeholder="Response User Message" /></li>
+            
+            <li>
+                <label>DESCRIPTION</span></label>
+                <textarea name="field5" id="field5" class="field-long field-textarea"></textarea>
+            </li>
+            <li>
+                <input type="submit" value="Submit" />
+            </li>
+        </ul>
+        </form>
+
+    </body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<style type="text/css">
+  /*    body {
+    background-image:    url(img/xplore2.png);
+    background-size:     cover;                      
+    background-repeat:   no-repeat;
+    background-position: center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;              
+}*/
+     div{
+          font-family: Calibri;
+          font-size: x-large;
+        }
+        
+     
+      .bg { 
+          
+          background-size:100%;
+          -webkit-background-size: cover;
+          -moz-background-size: cover;
+          -o-background-size: cover;
+          background-repeat: no-repeat;
+          background-size: cover;
+      }
+      
+    
+      .hidequestions{
+    display: none;
+      }
+    
+
+    .showQuestions{
+      position:absolute; right:-10px; top:375px;
+    display: block;
+    }
+    .questions{
+
+    }
+    .logo{
+      width:100%;
+    position:absolute;
+    float:right;
+    right:0;
+    top:0;
+    }
+    
+      .inputs{
+          width: 50%;
+          padding: 20px 20px;
+          color: white;
+                   
+      }
+      .caption {
+    position: absolute;
+    top: 2%;
+    left: -200px;
+    width: 100%;
+}
+      #content{
+        /*margin: 10px 10px;*/
+        /*background-color : grey ;*/
+        color: #F7DC6F  ;
+        opacity: 1;        
+        font-size: 30px;
+      }
+ 
+      ol{
+        list-style-type: left;
+        margin: 0;
+        padding: 0;
+      
+      }
+
+      li {
+      
+        color: white; /* text color */
+      }
+      p{
+        color: white;
+
+      }
+      .botOutput{
+        border-radius: 25px; 
+        /*opacity:0.5 ;*/
+         /*border-style:solid;*/
+          padding: 2em;
+          margin-right: 200px;
+          margin-left: 200px
+      }
+
+    
+
+    
+  </style>
+
+
+<head>
+  <title></title>
+</head>
+<body style="background-color:black;">
+<div ng-app="SpeechApp"  ng-controller="speechCtrl">
+	<div class="container">
+	  <div class="row">
+		
+	  </div>
+	</div>  
+<div class = "container">
+  <div class = "row">
+    <div class="col-md-12 col-lg-12 col-sm-12  bg " >
+      
+      <img src="img/xplore2.png" class ="img-responsive ">
+        <div class=" col-md-12 col-lg-12 col-sm-12 caption">
+            <p id="content"  class =" col-md-12 col-lg-12 col-sm-12 botOutput">Need any Assistance !!!</p>
+        </div>
+        
+        
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+<script>
+var app = angular.module("SpeechApp", []);
+	angular.module('SpeechModule', []).
+         factory('speech', function () {
+         
+             if(window.speechSynthesis) {
+                 var msg = new SpeechSynthesisUtterance();
+             }
+         
+             function getVoices() {       
+                 window.speechSynthesis.getVoices();
+               return window.speechSynthesis.getVoices();
+             }
+         
+             function sayIt(text, config) {
+                 var voices = getVoices();
+              
+                 //choose voice. Fallback to default
+                 msg.voice = config && config.voiceIndex ? voices[config.voiceIndex] : voices[0];
+                 msg.volume = config && config.volume ? config.volume : 1;
+                 msg.rate = config && config.rate ? config.rate : 1;
+                 msg.pitch = config && config.pitch ? config.pitch : 1;
+         
+                 //message for speech
+                 msg.text = text;
+                 speechSynthesis.speak(msg);
+             }
+         
+             return {
+                 sayText: sayIt,
+                 getVoices: getVoices
+             };
+         });
+         
+         
+         angular.module('SpeechApp', ['SpeechModule'])
+         .controller('speechCtrl', ['$scope', '$timeout', '$http', 'speech', function ($scope, $timeout, $http, speech) {
+           $scope.support = false;
+           $scope.AccountList = [];
+           
+           if(window.speechSynthesis) {
+             $scope.support = true;                                    
+           
+             $timeout(function () {
+                 initMethod();
+               $scope.voices = speech.getVoices();          
+             }, 500);  
+           }
+         
+             $scope.pitch = 1;
+             $scope.rate = 1;           
+             $scope.volume = 1;
+           
+             $scope.submitEntry = function () {            
+                 var voiceIdx = $scope.voices.indexOf($scope.optionSelected);
+                 console.log(voiceIdx);
+                     config = {
+                       voiceIndex: voiceIdx,
+                       rate: $scope.rate,
+                       pitch: $scope.pitch,
+                       volume: $scope.volume
+                     };
+         
+                 if(window.speechSynthesis) {
+                     speech.sayText($scope.msg, config);
+                 }
+             }
+         
+             if(window.speechSynthesis) {
+                 $scope.optionSelected = {
+                     "peechSynthesisVoicedefault": false, 
+                     "lang": "en-GB",
+                     "localService": "false",
+                     "name": "Google UK English Male",
+                     "voiceURI": "Google UK English Male"            
+                 };
+         
+                 console.log($scope.optionSelected);
+                 //speech.sayText('Good morning How can i help you today ?');
+             }
+
+
+        function initMethod() {
+			annyang.pause();
+				var delayMillis = 5000; //10 second
+				setTimeout(function() {
+				  annyang.start();
+			}, delayMillis);
+             speech.sayText('Hello! How Can I help you ?');      
+         }
+         // Voice Recognation using annyang
+         if (annyang) {
+           // Lets define our first command. First the text we expect, and then the function it should call
+           var welcomeCommand = {
+             'Hello': function() {
+               speech.sayText('Hello! How Can I help you ?');
+             }
+           };
+           
+           var helpcommand= {
+             'Help': function initMethod() {
+             speech.sayText('I am here to help you');
+                  }  
+         };
+		 
+var thankyou = {
+             'Thank You': function() {
+               speech.sayText('Happy to help');
+             }
+           };
+             
+           
+           var stopcommand = {
+             'Stop': function() {
+               speech.sayText('Voice Assistance has been disabled. Please reload the page to enable voice assistance again');
+               annyang.abort();
+             }
+           };
+		   
+		   var newCommand = {
+			'*val' : function(val){
+				$scope.data = {
+					userQuery: val,
+					luisCallRequired: true
+				}
+				$http.post("https://virtualassistance.herokuapp.com/getCareerData", $scope.data).
+					success(function(data, status, headers, config){
+					console.log('success: ' +data);
+					console.log(data.finalResponseText);
+					  if(data.finalResponseText != null && data.finalResponseText !=  ''){
+						var len = data.finalResponseText.length;
+						annyang.pause();
+						var delayMillis = len * 80; //10 second
+						console.log(delayMillis);
+						setTimeout(function() {
+						  annyang.start();
+						}, delayMillis);
+						if(document.getElementById("content").innerHTML != data.finalResponseText){
+							speech.sayText(data.finalResponseText);
+						}
+						document.getElementById("content").innerHTML = data.finalResponseText;
+						
+					  }else{
+						annyang.pause();
+						var delayMillis = 8000; //8 second
+						setTimeout(function() {
+						  annyang.start();
+						},delayMillis);
+						speech.sayText('Sorry, we couldnt understand your query.');
+					}
+				})
+				.error(function(data, status, headers, config){
+					console.log('error: ' +data);
+				});
+				
+				/*	var data1 = {
+						userQuery: 'Sales agreement',
+						luisCallRequired: true
+						}
+					$http({
+						url: 'https://virtualassistance.herokuapp.com/getLuisData',
+						method: 'POST',
+						body: data1
+						}).success(function(response) {
+							console.log('success: ' + response);
+						}).error(function(response) {
+							console.log('error: ' + response);
+						})
+				*/
+				
+			}
+		   };
+           
+    
+           // Add our commands to annyang
+           annyang.addCommands(helpcommand);
+           annyang.addCommands(stopcommand);
+		   annyang.addCommands(thankyou);
+		   annyang.addCommands(newCommand);
+           annyang.debug();
+           // Start listening. You can call this here, or attach this call to an event, button, etc.
+           annyang.start({ autoRestart: true, continuous: false });
+           console.log('started');
+         }        
+         }]); 
+
+</script>
+
+
+
+</body>
+</html>
